@@ -1,31 +1,32 @@
 import { of, pipe } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-const test1 = of(2).pipe(
-    map((value) => {
-        console.log('test1');
-        return value * 10;
-    })
-);
+const test1 = of('test1 observable');
 
-const a = () => {
-    b();
-    console.log('function a')
-    return test1.pipe(tap(() => console.log('in test1 tap')));
+const observableFactoryA = () => {
+    console.log('function observableFactoryA');
+    sideEffect();
+    return test1.pipe(tap(() => console.log('tap test1 observable ')));
 };
-const b = () => {
-    console.log('funtion b');
+const sideEffect = () => {
+    console.log('funtion sideEffect');
 };
 
-const c = () => {
-    b();
-    return of(3)
-}
+const d = observableFactoryA().pipe(map((value) => value + value));
+// d = sideEffect() + test1.pipe(tap(() => console.log('tap test1 observable ')));
+// d.subscribe() = sideEffect() + test1.pipe(tap(() => console.log('tap test1 observable '))).subscribe();
 
-const d = a().pipe(map((value) => value * 100));
-// d = b() + test1.pipe(map((value) => value * 10));
-    
+d.subscribe();
+d.subscribe();
+d.subscribe();
 
-c().subscribe();
-c().subscribe();
-c().subscribe();
+
+
+// const observableFactoryB = () => {
+//     sideEffect();
+//     return of(3)
+// }
+// const e = observableFactoryB()
+// e.subscribe();
+// e.subscribe();
+// e.subscribe();
